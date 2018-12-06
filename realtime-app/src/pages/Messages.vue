@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div>
     <h1>Messages</h1>
     <div>
       <form @submit.prevent="createMessage">
@@ -8,11 +8,23 @@
         <button type="submit">Create</button>
       </form>
     </div>
-    <ul>
-      <li v-for="message in messages" :key="JSON.stringify(message)">
-        TO: {{ usersById[message.to].email }} - MSG: {{ message.name }} - FROM: {{ usersById[message.from].email }}
-      </li>
-    </ul>
+    <div class="wrapper" v-if="users.length && messages.length">
+      <section v-for="message in messages" :key="message._id">
+        <div>
+          TO: {{ usersById[message.to] && usersById[message.to].email }}
+        </div>
+        <div>
+          MSG: {{ message.name }}
+        </div>
+        <div>
+          FROM: {{ usersById[message.from] && usersById[message.from].email }}
+        </div>
+        <div>
+          <input type="text" v-model="message.name">
+          <button type="button" @click.prevent="updateMessage(message)">Save</button>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -42,8 +54,12 @@ export default {
       return this.findMessagesInStore({ query: { $or: [{ to: user._id }, { from: user._id }] } }).data
     },
 
+    users () {
+      return this.findUsersInStore({}).data
+    },
+
     usersByEmail () {
-      const users = this.findUsersInStore({}).data
+      const { users } = this
       // Map to object keyec by name for easy lookup
       return users.reduce((users, user) => {
         users[user.email] = user
@@ -52,7 +68,7 @@ export default {
     },
 
     usersById () {
-      const users = this.findUsersInStore({}).data
+      const { users } = this
       // Map to object keyec by name for easy lookup
       return users.reduce((users, user) => {
         users[user._id] = user
@@ -86,6 +102,10 @@ export default {
       } else {
         console.log('No user...')
       }
+    },
+
+    updateMessage (msg) {
+      msg.save()
     }
   },
   created () {
@@ -96,3 +116,29 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  ul {
+    list-style: none;
+  }
+
+  .wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+
+    section {
+      width: 100%;
+      display: flex;
+      justify-content: space-evenly;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 50px;
+      padding-right: 50px;
+      div {
+        width: 100%;
+        text-align: left;
+      }
+    }
+  }
+</style>
