@@ -20,8 +20,8 @@
           FROM: {{ usersById[message.from] && usersById[message.from].email }}
         </div>
         <div>
-          <input type="text" v-model="message.name">
-          <button type="button" @click.prevent="updateMessage(message)">Save</button>
+          <input v-if="message.from === user._id" type="text" v-model="message.name">
+          <button v-if="message.from === user._id" type="button" @click.prevent="updateMessage(message)">Save</button>
         </div>
       </section>
     </div>
@@ -54,6 +54,12 @@ export default {
       return this.findMessagesInStore({ query: { $or: [{ to: user._id }, { from: user._id }] } }).data
     },
 
+    // Authenticated user
+    user () {
+      return this.$store.state.auth.user
+    },
+
+    // All users
     users () {
       return this.findUsersInStore({}).data
     },
