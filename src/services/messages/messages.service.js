@@ -1,28 +1,28 @@
 // Initializes the `messages` service on path `/messages`
-const createService = require('feathers-nedb');
-const createModel = require('../../models/messages.model');
-const hooks = require('./messages.hooks');
+const createService = require('feathers-nedb')
+const createModel = require('../../models/messages.model')
+const hooks = require('./messages.hooks')
 
 module.exports = function (app) {
-  const Model = createModel(app);
-  const paginate = app.get('paginate');
+  const Model = createModel(app)
+  const paginate = app.get('paginate')
 
   const options = {
     Model,
     paginate
-  };
+  }
 
   // Initialize our service with any options it requires
-  app.use('/messages', createService(options));
+  app.use('/messages', createService(options))
 
   // Get our initialized service so that we can register hooks
-  const service = app.service('messages');
+  const service = app.service('messages')
 
-  service.hooks(hooks);
+  service.hooks(hooks)
 
   // Override the default publish so we only send data within
   // these channels
   service.publish((data, hook) => {
-    return app.channel(`userIds/${data.to}`);
+    return app.channel(`userIds/${data.to}`)
   })
-};
+}

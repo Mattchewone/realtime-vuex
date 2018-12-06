@@ -25,7 +25,6 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-
 // Auth first before loading the app
 store.dispatch('auth/authenticate')
   .catch(() => {})

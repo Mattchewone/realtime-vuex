@@ -1,8 +1,8 @@
-const { authenticate } = require('@feathersjs/authentication').hooks;
+const { authenticate } = require('@feathersjs/authentication').hooks
 
 const {
   hashPassword, protect
-} = require('@feathersjs/authentication-local').hooks;
+} = require('@feathersjs/authentication-local').hooks
 
 module.exports = {
   before: {
@@ -10,8 +10,8 @@ module.exports = {
     find: [],
     get: [],
     create: [ hashPassword() ],
-    update: [ hashPassword(),  authenticate('jwt') ],
-    patch: [ hashPassword(),  authenticate('jwt') ],
+    update: [ hashPassword(), authenticate('jwt') ],
+    patch: [ hashPassword(), authenticate('jwt') ],
     remove: [ authenticate('jwt') ]
   },
 
@@ -38,4 +38,4 @@ module.exports = {
     patch: [],
     remove: []
   }
-};
+}
